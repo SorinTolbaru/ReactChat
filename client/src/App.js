@@ -1,15 +1,19 @@
-import { io } from "socket.io-client";
-import { useRef } from "react";
+import React from 'react'
+import {
+  BrowserRouter,
+  Route,
+  Routes
+} from "react-router-dom"
+
+import Chat from "./pages/Chat";
 
 
-function App() {
-  const socket = useRef();
-  socket.current = io(`http://${window.location.hostname}:5000`);
+export default function App() {
   return (
-    <div className="App">
-        <div>works</div>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path='/' element={ <Chat/> }/>
+    </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;
