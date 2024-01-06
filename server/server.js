@@ -17,17 +17,28 @@ const server = app.listen(5000, "0.0.0.0", () => {
     },
   })
 
+  const onlineUsers = new Set()
+
+  app.get("/getUsersList", (req, res) => {
+    res.send(Array.from(onlineUsers))
+  })
+
   io.on("connection", async (socket) => {
-    socket.on("enter", () => {
-      console.log("A user connected")
+    socket.on("enter", (username) => {
+      socket.user = username
+      onlineUsers.add(socket.user, socket.id)
+      console.log(`${socket.user} connected`)
+      console.log(onlineUsers)
     })
 
     socket.on("send-message", (message) => {
-      io.emit("receive-message", message)
+      io.emit("receive-message", `${socket.user}: ${message}`)
     })
 
     socket.on("disconnect", () => {
-      console.log("A user disconnected")
+      onlineUsers.delete(socket.user)
+      console.log(`${socket.user} disconnected`)
+      console.log(onlineUsers)
     })
   })
 })
