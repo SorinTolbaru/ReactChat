@@ -35,8 +35,21 @@ export default function Chat() {
 
   function sendMessage(e) {
     e.preventDefault()
-    socket.current.emit("send-message", userMessage)
-    setUserMessage("")
+    if (userMessage.length > 0) {
+      socket.current.emit("send-message", userMessage)
+      const newMessage = (
+        <li key={uuidv4()}>
+          <p>
+            {localStorage.getItem("chat-name")}: {userMessage}
+          </p>
+        </li>
+      )
+      if (!userMessage.includes("/pm ")) {
+        setMessages((prevMessages) => [...prevMessages, newMessage])
+      }
+
+      setUserMessage("")
+    }
   }
 
   function disconnect(e) {
@@ -46,7 +59,7 @@ export default function Chat() {
     navigate("/")
   }
 
-  async function getUsersList(e) {
+  function getUsersList(e) {
     e.preventDefault()
     if (isShownChatList === false) {
       axios
