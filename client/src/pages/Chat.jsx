@@ -19,6 +19,10 @@ export default function Chat() {
   const navigate = useNavigate()
 
   useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight)
+  }, [messages])
+
+  useEffect(() => {
     if (!isConnected.current) {
       socket.current = io(`http://${window.location.hostname}:5000`)
       isConnected.current = true

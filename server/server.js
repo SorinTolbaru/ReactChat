@@ -37,10 +37,14 @@ dbConnection.once("open", () => {
       res.send(Array.from(onlineUsers.values()))
     })
 
-    io.on("connection", async (socket) => {
-      socket.on("enter", (username) => {
+    io.on("connection", (socket) => {
+      socket.on("enter", async (username) => {
         socket.user = username
         onlineUsers.set(socket.id, socket.user)
+        const usersMessages = await Chat.find({})
+        usersMessages.forEach((e) => {
+          socket.emit("receive-message", `${e.username}: ${e.message}`)
+        })
         io.emit("receive-message", `${socket.user} connected`)
         console.log(`${socket.user} connected`)
         console.log(onlineUsers)
@@ -49,9 +53,7 @@ dbConnection.once("open", () => {
       socket.on("send-message", (message) => {
         if (message.includes("/pm ")) {
           messageAndTo = splitMessage(message, socket.user)
-          let id = Array.from(onlineUsers).find((user) =>
-            user.includes(messageAndTo.to)
-          )
+          let id = getUserId(messageAndTo.to)
           if (id && id[0] !== undefined) {
             socket.to(id[0]).emit("receive-message", messageAndTo.msg)
             socket.emit("receive-message", messageAndTo.msg)
@@ -93,6 +95,10 @@ dbConnection.once("open", () => {
       }
 
       return { msg: M, to: u }
+    }
+
+    function getUserId(fromUser) {
+      return Array.from(onlineUsers).find((user) => user.includes(fromUser))
     }
   })
 })
