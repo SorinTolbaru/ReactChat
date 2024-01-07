@@ -13,6 +13,8 @@ export default function Chat() {
   const [userMessage, setUserMessage] = useState("")
   const [chatList, setChatList] = useState([])
   const [isShownChatList, setIsShownChatList] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
+  const [timer, setTimer] = useState(null)
 
   const navigate = useNavigate()
 
@@ -29,6 +31,22 @@ export default function Chat() {
           </li>
         )
         setMessages((prevMessages) => [...prevMessages, newMessage])
+      })
+
+      socket.current.on("user-typing", (msg) => {
+        const { message, id } = msg
+        if (message) {
+          const newMessage = (
+            <li key={uuidv4()} id={id}>
+              <p>{message}</p>
+            </li>
+          )
+          setMessages((prevMessages) => [...prevMessages, newMessage])
+        } else {
+          setMessages((prevMessages) =>
+            prevMessages.filter((message) => message.props.id !== id)
+          )
+        }
       })
     }
   }, [isConnected])
@@ -79,6 +97,26 @@ export default function Chat() {
     }
   }
 
+  function checkUserTyping(e) {
+    setUserMessage(e.target.value)
+    if (!isTyping) {
+      socket.current.emit("user-typing", {
+        message: `${localStorage.getItem("chat-name")} is typing...`,
+        id: localStorage.getItem("chat-name"),
+      })
+    }
+    setIsTyping(true)
+    clearTimeout(timer)
+    setTimer(
+      setTimeout(() => {
+        setIsTyping(false)
+        socket.current.emit("user-typing", {
+          id: localStorage.getItem("chat-name"),
+        })
+      }, 1000)
+    )
+  }
+
   return (
     <div>
       {isShownChatList && (
@@ -94,7 +132,7 @@ export default function Chat() {
           id="input"
           autoComplete="off"
           value={userMessage}
-          onChange={(e) => setUserMessage(e.target.value)}
+          onChange={(e) => checkUserTyping(e)}
         />
         <button id="send">Send</button>
         <button id="disconnect" onClick={(e) => disconnect(e)}>

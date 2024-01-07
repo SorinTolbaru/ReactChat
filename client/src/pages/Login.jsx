@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import "./styles.css"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
@@ -7,6 +7,12 @@ export default function Login() {
   const [user, setUser] = useState("")
   const [isOnline, setIsOnline] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (localStorage.getItem("chat-name")) {
+      navigate("/Chat")
+    }
+  })
 
   function enterChat(e) {
     e.preventDefault()

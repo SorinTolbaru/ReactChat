@@ -50,6 +50,10 @@ const server = app.listen(5000, "0.0.0.0", () => {
       }
     })
 
+    socket.on("user-typing", (msg) => {
+      io.emit("user-typing", msg)
+    })
+
     socket.on("disconnect", () => {
       onlineUsers.delete(socket.id)
       console.log(`${socket.user} disconnected`)
