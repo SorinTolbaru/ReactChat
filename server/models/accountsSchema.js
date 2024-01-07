@@ -1,20 +1,20 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
-const chatSchema = new Schema(
+const accountSchema = new Schema(
   {
-    message: {
+    account: {
       type: String,
       required: true,
     },
-    from: {
+    password: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   { timestamps: true }
 )
 
-const Chat = mongoose.model("Message", chatSchema)
+const Account = mongoose.model("Account", accountSchema)
 
-module.exports = Chat
+module.exports = Account

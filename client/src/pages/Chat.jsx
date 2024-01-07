@@ -26,7 +26,7 @@ export default function Chat() {
     if (!isConnected.current) {
       socket.current = io(`http://${window.location.hostname}:5000`)
       isConnected.current = true
-      socket.current.emit("enter", localStorage.getItem("chat-name"))
+      socket.current.emit("enter", localStorage.getItem("username"))
 
       socket.current.on("receive-message", (msg) => {
         const newMessage = (
@@ -62,7 +62,7 @@ export default function Chat() {
       const newMessage = (
         <li key={uuidv4()}>
           <p>
-            {localStorage.getItem("chat-name")}: {userMessage}
+            {localStorage.getItem("username")}: {userMessage}
           </p>
         </li>
       )
@@ -76,7 +76,8 @@ export default function Chat() {
 
   function disconnect(e) {
     e.preventDefault()
-    localStorage.removeItem("chat-name")
+    localStorage.removeItem("username")
+    localStorage.removeItem("password")
     socket.current.disconnect()
     navigate("/")
   }
@@ -105,8 +106,8 @@ export default function Chat() {
     setUserMessage(e.target.value)
     if (!isTyping) {
       socket.current.emit("user-typing", {
-        message: `${localStorage.getItem("chat-name")} is typing...`,
-        id: localStorage.getItem("chat-name"),
+        message: `${localStorage.getItem("username")} is typing...`,
+        id: localStorage.getItem("username"),
       })
     }
     setIsTyping(true)
@@ -115,7 +116,7 @@ export default function Chat() {
       setTimeout(() => {
         setIsTyping(false)
         socket.current.emit("user-typing", {
-          id: localStorage.getItem("chat-name"),
+          id: localStorage.getItem("username"),
         })
       }, 1000)
     )

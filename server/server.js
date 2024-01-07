@@ -3,6 +3,7 @@ const cors = require("cors")
 const socketIo = require("socket.io")
 const mongoose = require("mongoose")
 const Chat = require("./models/messageSchema.js")
+const Account = require("./models/accountsSchema.js")
 
 const app = express()
 app.use(cors())
@@ -37,13 +38,53 @@ dbConnection.once("open", () => {
       res.send(Array.from(onlineUsers.values()))
     })
 
+    app.post("/register", async (req, res) => {
+      const { user, password } = req.body
+      try {
+        let found = await Account.findOne({ account: user })
+        if (found) {
+          res
+            .status(206)
+            .json({ success: false, message: "User already exists" })
+        } else {
+          let newUser = new Account({
+            account: user,
+            password: password,
+          })
+          newUser.save()
+          res
+            .status(200)
+            .json({ success: true, message: "Registered and connected" })
+        }
+      } catch (error) {
+        console.error("Error registering user:", error)
+        res
+          .status(500)
+          .json({ success: false, message: "Internal Server Error" })
+      }
+    })
+
+    app.post("/login", async (req, res) => {
+      const { user, password } = req.body
+      try {
+        const account = await Account.findOne({ account: user })
+        if (account?.password === password) {
+          res.status(200).json({ success: true, message: "Login successful" })
+        } else {
+          res.status(206).json({ success: false, message: "Wrong password" })
+        }
+      } catch (error) {
+        res.status(206).json({ success: false, message: "No user found" })
+      }
+    })
+
     io.on("connection", (socket) => {
       socket.on("enter", async (username) => {
         socket.user = username
         onlineUsers.set(socket.id, socket.user)
         const usersMessages = await Chat.find({})
         usersMessages.forEach((e) => {
-          socket.emit("receive-message", `${e.username}: ${e.message}`)
+          socket.emit("receive-message", `${e.from}: ${e.message}`)
         })
         io.emit("receive-message", `${socket.user} connected`)
         console.log(`${socket.user} connected`)
