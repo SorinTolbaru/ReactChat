@@ -13,13 +13,6 @@ app.use(express.json())
 
 const mongoURL = process.env.MONGO_DATABASE_URL
 
-// if (process.env.npm_lifecycle_event !== "server") {
-//   app.use(express.static(path.join(__dirname, "..", "client", "build")))
-//   app.get("*", (req, res) => {
-//     res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"))
-//   })
-// }
-
 mongoose.connect(mongoURL)
 
 const dbConnection = mongoose.connection
@@ -110,6 +103,18 @@ dbConnection.once("open", () => {
           )
         }
         io.emit("update-status", Array.from(onlineUsersList.keys()))
+      })
+
+      socket.on("delete-messages", async (contact) => {
+        const deleteCondition = {
+          $or: [
+            { from: socket.user, to: contact },
+            { from: contact, to: socket.user },
+          ],
+        }
+        const status = await Chat.deleteMany(deleteCondition)
+        socket.to(onlineUsersList.get(contact)).emit("get-messages", [])
+        console.log(status)
       })
 
       socket.on("user-typing", (typingObj) => {

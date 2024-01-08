@@ -304,6 +304,16 @@ button:hover > svg {
   border: 1px solid;
 }
 
+.emoji-picker {
+  height: 100%;
+  width: 10%;
+  font-weight: bold;
+  border: none;
+  border-left: 1px solid black;
+  cursor: pointer;
+  border: 1px solid;
+}
+
 .delete-messages {
   width: 50%;
   height: 50%;
@@ -333,6 +343,11 @@ button:hover > svg {
   background-color: red !important;
 }
 
+.picker-container {
+  position: absolute;
+  bottom: 8%;
+  right: 2%;
+}
 .auth-text {
   margin: 5px;
 }
@@ -342,7 +357,8 @@ button:hover > svg {
 /* Tablet */
 @media only screen and (max-width: 1024px) {
   .login-form,
-  .register-form {
+  .register-form,
+  .delete-messages {
     width: 80%;
   }
 
@@ -360,10 +376,19 @@ button:hover > svg {
 
 @media only screen and (max-width: 425px) {
   .login-form,
-  .register-form {
+  .register-form,
+  .delete-messages {
     width: 95%;
   }
   .chat-list {
     width: 42vw;
+  }
+}
+
+/* Small Smartphone */
+
+@media only screen and (max-width: 320px) {
+  .picker-container {
+    right: -5%;
   }
 }
