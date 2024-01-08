@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import DeleteMessagesPOP from "../components/Popups"
 import data from "@emoji-mart/data"
 import Picker from "@emoji-mart/react"

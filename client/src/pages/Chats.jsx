@@ -152,6 +152,7 @@ export default function Chats() {
     localStorage.removeItem("username")
     localStorage.removeItem("password")
     localStorage.removeItem("talking-to")
+    socket.current.disconnect()
     navigate("/")
   }
 

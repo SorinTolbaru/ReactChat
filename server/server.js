@@ -25,7 +25,7 @@ dbConnection.once("open", () => {
   console.log("Connected to MongoDB")
 
   const server = app.listen(5000, "0.0.0.0", () => {
-    console.log("Server running on port http://localhost:5000")
+    console.log("Server running")
 
     const io = socket(server, {
       cors: {
