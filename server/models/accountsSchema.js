@@ -7,6 +7,10 @@ const accountSchema = new Schema(
       type: String,
       required: true,
     },
+    contacts: {
+      type: [String],
+      required: true,
+    },
     password: {
       type: String,
       required: true,

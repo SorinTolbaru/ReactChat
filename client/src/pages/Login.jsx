@@ -7,7 +7,7 @@ export default function Login() {
   const [userError, setUserError] = useState(null)
   useEffect(() => {
     if (localStorage.getItem("username")) {
-      navigate("/chat")
+      navigate("/chats")
     }
   })
 
@@ -15,7 +15,7 @@ export default function Login() {
     e.preventDefault()
     const username = e.target.elements.user.value
     const password = e.target.elements.password.value
-    if (username.length >= 3) {
+    if (username.length >= 4) {
       try {
         const response = await axios.post(
           `http://${window.location.hostname}:5000/login`,
@@ -28,7 +28,8 @@ export default function Login() {
         if (response.status === 200) {
           localStorage.setItem("username", username)
           localStorage.setItem("password", password)
-          navigate("/chat")
+          localStorage.removeItem("talking-to")
+          navigate("/chats")
         } else {
           setUserError(response.data.message)
         }
@@ -49,14 +50,14 @@ export default function Login() {
         name="user"
         id="user"
         placeholder="Username"
-        minLength={4}
+        minLength={3}
       />
       <input
         type="password"
         id="user-password"
         name="password"
         placeholder="Password"
-        minLength={8}
+        minLength={7}
       />
       <p className="auth-text">
         Don't have an account?

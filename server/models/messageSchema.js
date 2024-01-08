@@ -9,7 +9,11 @@ const chatSchema = new Schema(
     },
     from: {
       type: String,
-      required: false,
+      required: true,
+    },
+    to: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

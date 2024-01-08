@@ -17,7 +17,7 @@ export default function Register() {
     const username = e.target.elements.user.value
     const password = e.target.elements.password.value
     const passwordCheck = e.target.elements.checkPassword.value
-    if (username.length >= 3 && password.length >= 8) {
+    if (username.length >= 4 && password.length >= 8) {
       if (password === passwordCheck) {
         try {
           const response = await axios.post(
@@ -31,7 +31,8 @@ export default function Register() {
           if (response.status === 200) {
             localStorage.setItem("username", username)
             localStorage.setItem("password", password)
-            navigate("/chat")
+            localStorage.removeItem("talking-to")
+            navigate("/chats")
           } else {
             setUserError(response.data.message)
           }
