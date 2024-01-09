@@ -50,6 +50,12 @@ export default function Chats() {
         localStorage.getItem("username"),
         localStorage.getItem("password")
       )
+      if (
+        localStorage.getItem("username") === null &&
+        localStorage.getItem("password") === null
+      ) {
+        disconnectUser()
+      }
       isConnected.current = true
 
       //set all socket on so it doesnt add up the ons
