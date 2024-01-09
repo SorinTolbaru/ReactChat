@@ -15,18 +15,18 @@ export default function Login() {
     e.preventDefault()
     const username = e.target.elements.user.value
     const password = e.target.elements.password.value
-    if (username.length >= 4) {
+    if (username.length >= 3) {
       try {
         const response = await axios.post(
           `http://${window.location.hostname}:5000/login`,
           {
-            user: username,
+            user: username.trim(),
             password,
           }
         )
 
         if (response.status === 200) {
-          localStorage.setItem("username", username)
+          localStorage.setItem("username", username.trim())
           localStorage.setItem("password", password)
           localStorage.removeItem("talking-to")
           navigate("/chats")
