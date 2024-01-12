@@ -48,11 +48,11 @@ export default function Chats() {
       socket.current.emit(
         "enter",
         localStorage.getItem("username"),
-        localStorage.getItem("password")
+        localStorage.getItem("id")
       )
       if (
         localStorage.getItem("username") === null &&
-        localStorage.getItem("password") === null
+        localStorage.getItem("id") === null
       ) {
         disconnectUser()
       }
@@ -156,7 +156,7 @@ export default function Chats() {
 
   function disconnectUser() {
     localStorage.removeItem("username")
-    localStorage.removeItem("password")
+    localStorage.removeItem("id")
     localStorage.removeItem("talking-to")
     socket.current.disconnect()
     navigate("/")

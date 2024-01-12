@@ -37,14 +37,14 @@ dbConnection.once("open", () => {
     let onlineUsersList = new Map()
 
     io.on("connection", async (socket) => {
-      socket.on("enter", async (user, password) => {
+      socket.on("enter", async (user, id) => {
         socket.user = user
         onlineUsersList.set(user, socket.id)
         console.log(user + " connected")
         try {
           const account = await Account.find({ account: socket.user })
           const accounts = await Account.find({})
-          let validPassword = account[0].password === password ? true : false
+          let validPassword = account[0]._id.toString() === id ? true : false
           socket.emit(
             "update-user-list",
             account[0].contacts,
@@ -143,7 +143,9 @@ app.post("/login", async (req, res) => {
   try {
     const account = await Account.findOne({ account: user })
     if (account?.password === password) {
-      res.status(200).json({ success: true, message: "Login successful" })
+      res
+        .status(200)
+        .json({ success: true, message: "Login successful", id: account._id })
     } else {
       res.status(206).json({ success: false, message: "Wrong password" })
     }
@@ -165,12 +167,17 @@ app.post("/register", async (req, res) => {
         password: password,
       })
       newUser.save()
-      res
-        .status(200)
-        .json({ success: true, message: "Registered and connected" })
+      res.status(200).json({
+        success: true,
+        message: "Registered and connected",
+        id: newUser._id,
+      })
     }
   } catch (error) {
     console.error("Error registering user:", error)
-    res.status(500).json({ success: false, message: "Internal Server Error" })
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    })
   }
 })

@@ -27,7 +27,7 @@ export default function Login() {
 
         if (response.status === 200) {
           localStorage.setItem("username", username.trim())
-          localStorage.setItem("password", password)
+          localStorage.setItem("id", response.data.id)
           localStorage.removeItem("talking-to")
           navigate("/chats")
         } else {
