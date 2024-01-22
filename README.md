@@ -23,7 +23,11 @@ User Status: Easily identify the online/offline status of your contacts, enhanci
 # Tech Stack:
 
 Frontend: React, JavaScript, HTML, CSS
+
 Backend: Node.js
+
 Database:MongoDB
+
 Real-time Communication: Socket.io
+
 Responsive Design: CSS media queries
